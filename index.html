@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>EtherChannel – Cisco CCNA Module 6</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Inter',sans-serif;color:#fff}
+
+/* ── Slide container ── */
+.deck{width:100vw;height:100vh;position:relative}
+.slide{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  display:flex;flex-direction:column;
+  opacity:0;pointer-events:none;
+  transition:opacity .65s cubic-bezier(.4,0,.2,1),transform .65s cubic-bezier(.4,0,.2,1);
+  transform:translateY(40px);
+  overflow:hidden;
+}
+.slide.active{opacity:1;pointer-events:all;transform:translateY(0)}
+.slide.exit{opacity:0;transform:translateY(-40px)}
+
+/* ── Slide number ── */
+#slide-num{
+  position:fixed;bottom:22px;right:28px;
+  font-size:11px;letter-spacing:.12em;
+  color:rgba(255,255,255,.28);
+  font-weight:500;z-index:999;
+  font-family:'JetBrains Mono',monospace;
+  user-select:none;
+}
+
+/* ─────────────────────────────────────────────
+   SLIDE 1 – Hero / Title
+───────────────────────────────────────────── */
+#s1{
+  background:#03060f;
+}
+#s1 .bg{
+  position:absolute;inset:0;
+  background-image:url('assets/slide1_hero_datacenter.png');
+  background-size:cover;background-position:center;
+  filter:brightness(.35) saturate(1.2);
+}
+#s1 .overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(0,20,60,.85) 0%,rgba(0,0,0,.3) 100%);
+}
+#s1 .content{
+  position:relative;z-index:2;
+  display:flex;flex-direction:column;
+  justify-content:center;align-items:flex-start;
+  height:100%;padding:0 9vw;
+}
+#s1 .tag{
+  display:inline-block;
+  border:1px solid rgba(0,140,255,.6);
+  color:#4db8ff;
+  font-size:11px;letter-spacing:.2em;text-transform:uppercase;
+  padding:5px 14px;border-radius:20px;margin-bottom:28px;
+  background:rgba(0,120,255,.08);
+}
+#s1 h1{
+  font-size:clamp(44px,6vw,88px);
+  font-weight:900;line-height:1.05;
+  margin-bottom:24px;
+  background:linear-gradient(135deg,#fff 30%,#4db8ff 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+#s1 p{
+  font-size:clamp(15px,1.4vw,19px);color:rgba(255,255,255,.7);
+  max-width:680px;line-height:1.7;margin-bottom:40px;
+}
+#s1 .meta{display:flex;gap:32px}
+#s1 .meta span{
+  font-size:13px;color:rgba(255,255,255,.4);letter-spacing:.06em;
+  display:flex;align-items:center;gap:8px;
+}
+#s1 .meta span::before{content:'';width:6px;height:6px;border-radius:50%;background:#4db8ff;display:inline-block}
+
+/* ─────────────────────────────────────────────
+   SLIDE 2 – The Problem (STP)
+───────────────────────────────────────────── */
+#s2{background:#060d1f}
+#s2 .split{display:grid;grid-template-columns:1fr 1fr;height:100%}
+#s2 .left{
+  display:flex;flex-direction:column;justify-content:center;
+  padding:60px 6vw 60px 9vw;
+  background:linear-gradient(135deg,#060d1f 0%,#0a1535 100%);
+}
+#s2 .badge{
+  font-size:11px;letter-spacing:.2em;text-transform:uppercase;
+  color:#ff6b6b;margin-bottom:20px;font-weight:600;
+  display:flex;align-items:center;gap:8px;
+}
+#s2 .badge::before{content:'';width:24px;height:2px;background:#ff6b6b;border-radius:2px}
+#s2 h2{font-size:clamp(30px,3.5vw,52px);font-weight:800;line-height:1.15;margin-bottom:20px}
+#s2 .accent{color:#ff6b6b}
+#s2 p{font-size:15px;color:rgba(255,255,255,.65);line-height:1.75;margin-bottom:24px}
+#s2 .problem-list{list-style:none;display:flex;flex-direction:column;gap:14px;margin-top:8px}
+#s2 .problem-list li{
+  display:flex;align-items:flex-start;gap:12px;
+  font-size:14px;color:rgba(255,255,255,.75);line-height:1.6;
+}
+#s2 .problem-list li .icon{
+  flex-shrink:0;width:26px;height:26px;border-radius:6px;
+  background:rgba(255,107,107,.15);border:1px solid rgba(255,107,107,.3);
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;margin-top:1px;
+}
+#s2 .right{
+  position:relative;overflow:hidden;
+}
+#s2 .right img{
+  width:100%;height:100%;object-fit:cover;
+  filter:brightness(.55) saturate(1.1);
+}
+#s2 .right .voverlay{
+  position:absolute;inset:0;
+  background:linear-gradient(to right,#060d1f 0%,transparent 40%);
+}
+/* diagram on right */
+#s2 .right .diagram{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+}
+#s2 .diag-svg{width:90%;max-width:460px;}
+
+/* ─────────────────────────────────────────────
+   SLIDE 3 – EtherChannel Solution / Benefits
+───────────────────────────────────────────── */
+#s3{
+  background:#050e1a;
+  display:flex;flex-direction:column;
+}
+#s3 .top-bar{
+  flex-shrink:0;
+  padding:48px 9vw 32px;
+}
+#s3 .top-bar .badge{
+  font-size:11px;letter-spacing:.2em;text-transform:uppercase;
+  color:#00d4aa;margin-bottom:16px;font-weight:600;
+  display:flex;align-items:center;gap:8px;
+}
+#s3 .top-bar .badge::before{content:'';width:24px;height:2px;background:#00d4aa;border-radius:2px}
+#s3 .top-bar h2{font-size:clamp(28px,3vw,46px);font-weight:800;line-height:1.2}
+#s3 .top-bar h2 span{color:#00d4aa}
+#s3 .main-area{
+  flex:1;display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:0;padding:0 9vw 48px;
+}
+#s3 .cards{display:flex;flex-direction:column;gap:16px;justify-content:center}
+#s3 .card{
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:14px;padding:20px 22px;
+  display:flex;align-items:flex-start;gap:16px;
+  transition:border-color .3s,background .3s;
+}
+#s3 .card:hover{
+  border-color:rgba(0,212,170,.35);
+  background:rgba(0,212,170,.06);
+}
+#s3 .card .ico{
+  flex-shrink:0;width:42px;height:42px;border-radius:10px;
+  background:linear-gradient(135deg,rgba(0,212,170,.2),rgba(0,212,170,.05));
+  border:1px solid rgba(0,212,170,.25);
+  display:flex;align-items:center;justify-content:center;font-size:18px;
+}
+#s3 .card h4{font-size:14px;font-weight:700;margin-bottom:5px;color:#fff}
+#s3 .card p{font-size:13px;color:rgba(255,255,255,.55);line-height:1.55}
+#s3 .visual-right{
+  display:flex;align-items:center;justify-content:center;
+  padding-left:40px;position:relative;
+}
+#s3 .visual-right img{
+  width:100%;max-height:420px;object-fit:contain;
+  border-radius:16px;
+  filter:drop-shadow(0 0 40px rgba(0,212,170,.25));
+}
+
+/* ─────────────────────────────────────────────
+   SLIDE 4 – PAgP vs LACP Protocols
+───────────────────────────────────────────── */
+#s4{background:#07050f;display:flex;flex-direction:column;padding:52px 9vw}
+#s4 .badge{
+  font-size:11px;letter-spacing:.2em;text-transform:uppercase;
+  color:#a78bfa;margin-bottom:16px;font-weight:600;
+  display:flex;align-items:center;gap:8px;
+}
+#s4 .badge::before{content:'';width:24px;height:2px;background:#a78bfa;border-radius:2px}
+#s4 h2{font-size:clamp(26px,2.8vw,44px);font-weight:800;margin-bottom:36px}
+#s4 h2 span{color:#a78bfa}
+#s4 .proto-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;flex:1}
+.proto-card{
+  border-radius:20px;padding:32px;
+  display:flex;flex-direction:column;gap:18px;
+  position:relative;overflow:hidden;
+}
+.proto-card.pagp{
+  background:linear-gradient(135deg,rgba(59,130,246,.15) 0%,rgba(37,99,235,.08) 100%);
+  border:1px solid rgba(59,130,246,.3);
+}
+.proto-card.lacp{
+  background:linear-gradient(135deg,rgba(16,185,129,.15) 0%,rgba(5,150,105,.08) 100%);
+  border:1px solid rgba(16,185,129,.3);
+}
+.proto-card .proto-head{display:flex;align-items:center;gap:14px}
+.proto-card .proto-icon{
+  width:50px;height:50px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;font-weight:900;letter-spacing:-1px;
+}
+.pagp .proto-icon{background:rgba(59,130,246,.25);color:#60a5fa;font-size:13px}
+.lacp .proto-icon{background:rgba(16,185,129,.25);color:#34d399;font-size:13px}
+.proto-card h3{font-size:22px;font-weight:800}
+.proto-card .sub{font-size:12px;opacity:.5;margin-top:2px}
+.proto-card .tag-row{display:flex;gap:8px;flex-wrap:wrap}
+.proto-tag{
+  font-size:11px;padding:4px 10px;border-radius:6px;font-weight:600;
+  letter-spacing:.05em;
+}
+.pagp .proto-tag{background:rgba(59,130,246,.2);color:#93c5fd;border:1px solid rgba(59,130,246,.25)}
+.lacp .proto-tag{background:rgba(16,185,129,.2);color:#6ee7b7;border:1px solid rgba(16,185,129,.25)}
+.proto-card ul{list-style:none;display:flex;flex-direction:column;gap:10px}
+.proto-card ul li{
+  display:flex;align-items:flex-start;gap:10px;
+  font-size:13.5px;color:rgba(255,255,255,.72);line-height:1.55;
+}
+.proto-card ul li::before{
+  content:'→';font-weight:700;flex-shrink:0;margin-top:1px;
+}
+.pagp ul li::before{color:#60a5fa}
+.lacp ul li::before{color:#34d399}
+.proto-card .mode-table{
+  border-radius:10px;overflow:hidden;
+  border:1px solid rgba(255,255,255,.08);
+}
+.mode-table table{width:100%;border-collapse:collapse}
+.mode-table th{
+  font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+  padding:8px 12px;opacity:.5;font-weight:600;text-align:left;
+  background:rgba(255,255,255,.04);
+}
+.mode-table td{
+  padding:8px 12px;font-size:12.5px;
+  border-top:1px solid rgba(255,255,255,.06);
+  color:rgba(255,255,255,.75);
+}
+.mode-table td.mode-name{font-weight:700}
+
+/* ─────────────────────────────────────────────
+   SLIDE 5 – Port Requirements / Best Practices
+───────────────────────────────────────────── */
+#s5{background:#090b14;display:flex;flex-direction:column;padding:52px 9vw}
+#s5 .badge{
+  font-size:11px;letter-spacing:.2em;text-transform:uppercase;
+  color:#fbbf24;margin-bottom:16px;font-weight:600;
+  display:flex;align-items:center;gap:8px;
+}
+#s5 .badge::before{content:'';width:24px;height:2px;background:#fbbf24;border-radius:2px}
+#s5 h2{font-size:clamp(26px,2.8vw,44px);font-weight:800;margin-bottom:32px}
+#s5 h2 span{color:#fbbf24}
+#s5 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:28px;flex:1}
+#s5 .req-list{display:flex;flex-direction:column;gap:14px}
+.req-item{
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
+  border-radius:12px;padding:18px 20px;
+  display:flex;align-items:flex-start;gap:14px;
+  transition:border-color .3s;
+}
+.req-item:hover{border-color:rgba(251,191,36,.3)}
+.req-item .num{
+  flex-shrink:0;width:30px;height:30px;border-radius:8px;
+  background:rgba(251,191,36,.15);border:1px solid rgba(251,191,36,.25);
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:800;color:#fbbf24;
+}
+.req-item h4{font-size:14px;font-weight:700;margin-bottom:4px}
+.req-item p{font-size:12.5px;color:rgba(255,255,255,.55);line-height:1.5}
+#s5 .img-side{display:flex;align-items:center;justify-content:center}
+#s5 .img-side img{
+  width:100%;max-height:480px;object-fit:cover;
+  border-radius:16px;
+  filter:brightness(.75) saturate(1.1);
+  box-shadow:0 0 60px rgba(251,191,36,.15);
+}
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+
+<!-- ══════════ SLIDE 1 ══════════ -->
+<section class="slide active" id="s1">
+  <div class="bg"></div>
+  <div class="overlay"></div>
+  <div class="content">
+    <span class="tag">Cisco CCNA · Module 6</span>
+    <h1>EtherChannel</h1>
+    <p>Aggregate multiple physical links into a single logical connection — gain bandwidth, redundancy, and seamless STP compatibility without wasted ports.</p>
+    <div class="meta">
+      <span>Link Aggregation Technology</span>
+      <span>PAgP &amp; LACP Protocols</span>
+      <span>IEEE 802.3ad</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ SLIDE 2 ══════════ -->
+<section class="slide" id="s2">
+  <div class="split">
+    <div class="left">
+      <div class="badge">The Problem</div>
+      <h2>STP Blocks <span class="accent">Redundant</span> Links</h2>
+      <p>Spanning Tree Protocol prevents Layer 2 loops by blocking redundant paths — leaving bandwidth unused and limiting throughput between switches.</p>
+      <ul class="problem-list">
+        <li><span class="icon">⚠</span>Redundant links are blocked — wasted physical capacity</li>
+        <li><span class="icon">⚠</span>Single active link creates a bandwidth bottleneck</li>
+        <li><span class="icon">⚠</span>Slow STP reconvergence on link failure (up to 50 s)</li>
+        <li><span class="icon">⚠</span>No load distribution across multiple physical paths</li>
+      </ul>
+    </div>
+    <div class="right">
+      <img src="assets/slide2_stp_blocked.png" alt="STP blocking diagram"/>
+      <div class="voverlay"></div>
+      <div class="diagram">
+        <!-- inline SVG topology: STP blocked -->
+        <svg class="diag-svg" viewBox="0 0 460 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Switch top-left -->
+          <rect x="30" y="30" width="90" height="50" rx="8" fill="#1a3a6e" stroke="#4b8ef8" stroke-width="1.5"/>
+          <text x="75" y="60" text-anchor="middle" fill="#7eb5ff" font-size="11" font-family="Inter,sans-serif" font-weight="700">S1</text>
+          <!-- Switch top-right -->
+          <rect x="340" y="30" width="90" height="50" rx="8" fill="#1a3a6e" stroke="#4b8ef8" stroke-width="1.5"/>
+          <text x="385" y="60" text-anchor="middle" fill="#7eb5ff" font-size="11" font-family="Inter,sans-serif" font-weight="700">S2</text>
+          <!-- Switch bottom -->
+          <rect x="185" y="230" width="90" height="50" rx="8" fill="#1a3a6e" stroke="#4b8ef8" stroke-width="1.5"/>
+          <text x="230" y="260" text-anchor="middle" fill="#7eb5ff" font-size="11" font-family="Inter,sans-serif" font-weight="700">S3</text>
+          <!-- Lines S1-S2 active -->
+          <line x1="120" y1="55" x2="340" y2="55" stroke="#22c55e" stroke-width="2.5" stroke-dasharray="0"/>
+          <text x="230" y="46" text-anchor="middle" fill="#22c55e" font-size="10" font-family="Inter,sans-serif">Active</text>
+          <!-- Lines S1-S3 blocked -->
+          <line x1="75" y1="80" x2="215" y2="230" stroke="#ff4444" stroke-width="2" stroke-dasharray="6,4"/>
+          <!-- Lines S2-S3 blocked -->
+          <line x1="385" y1="80" x2="250" y2="230" stroke="#ff4444" stroke-width="2" stroke-dasharray="6,4"/>
+          <!-- Blocked symbols -->
+          <circle cx="148" cy="152" r="16" fill="rgba(255,68,68,.15)" stroke="#ff4444" stroke-width="2"/>
+          <line x1="137" y1="141" x2="159" y2="163" stroke="#ff4444" stroke-width="2.5"/>
+          <line x1="159" y1="141" x2="137" y2="163" stroke="#ff4444" stroke-width="2.5"/>
+          <circle cx="310" cy="152" r="16" fill="rgba(255,68,68,.15)" stroke="#ff4444" stroke-width="2"/>
+          <line x1="299" y1="141" x2="321" y2="163" stroke="#ff4444" stroke-width="2.5"/>
+          <line x1="321" y1="141" x2="299" y2="163" stroke="#ff4444" stroke-width="2.5"/>
+          <text x="148" y="185" text-anchor="middle" fill="#ff6b6b" font-size="9" font-family="Inter,sans-serif">Blocked</text>
+          <text x="310" y="185" text-anchor="middle" fill="#ff6b6b" font-size="9" font-family="Inter,sans-serif">Blocked</text>
+          <text x="230" y="310" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-size="9" font-family="Inter,sans-serif">By default, STP will block redundant links</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ SLIDE 3 ══════════ -->
+<section class="slide" id="s3">
+  <div class="top-bar">
+    <div class="badge">The Solution</div>
+    <h2>EtherChannel — <span>One Logical Link,</span> Full Power</h2>
+  </div>
+  <div class="main-area">
+    <div class="cards">
+      <div class="card">
+        <div class="ico">⚡</div>
+        <div><h4>Increased Bandwidth</h4><p>Bundle up to 8 physical ports into one logical link — aggregate up to 800 Mbps (Fast) or 8 Gbps (Gigabit) of throughput.</p></div>
+      </div>
+      <div class="card">
+        <div class="ico">🔄</div>
+        <div><h4>Load Balancing</h4><p>Traffic distributed across all active member links using configurable hashing methods (MAC, IP, port-based).</p></div>
+      </div>
+      <div class="card">
+        <div class="ico">🛡</div>
+        <div><h4>STP Transparency</h4><p>STP sees the entire EtherChannel bundle as a single port — no redundant link is blocked, all capacity is utilized.</p></div>
+      </div>
+      <div class="card">
+        <div class="ico">🚀</div>
+        <div><h4>Fast Convergence</h4><p>If one member link fails, traffic is instantly redistributed to remaining links — sub-second failover with no STP reconvergence.</p></div>
+      </div>
+    </div>
+    <div class="visual-right">
+      <img src="assets/slide3_etherchannel_bundle.png" alt="EtherChannel bundle diagram"/>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ SLIDE 4 ══════════ -->
+<section class="slide" id="s4">
+  <div class="badge">Aggregation Protocols</div>
+  <h2>PAgP vs <span>LACP</span></h2>
+  <div class="proto-grid">
+    <!-- PAgP -->
+    <div class="proto-card pagp">
+      <div class="proto-head">
+        <div class="proto-icon">PAgP</div>
+        <div>
+          <h3>PAgP</h3>
+          <div class="sub">Port Aggregation Protocol</div>
+        </div>
+      </div>
+      <div class="tag-row">
+        <span class="proto-tag">Cisco Proprietary</span>
+        <span class="proto-tag">Layer 2</span>
+      </div>
+      <ul>
+        <li>Developed by Cisco — works only between Cisco devices</li>
+        <li>Automatically negotiates EtherChannel formation</li>
+        <li>Supports up to 8 bundled ports per channel</li>
+        <li>Sends PAgP packets every 30 seconds</li>
+      </ul>
+      <div class="mode-table">
+        <table>
+          <tr><th>Mode</th><th>Behavior</th></tr>
+          <tr><td class="mode-name">On</td><td>Forces channel — no negotiation</td></tr>
+          <tr><td class="mode-name">Desirable</td><td>Actively initiates PAgP</td></tr>
+          <tr><td class="mode-name">Auto</td><td>Passively waits for PAgP</td></tr>
+        </table>
+      </div>
+    </div>
+    <!-- LACP -->
+    <div class="proto-card lacp">
+      <div class="proto-head">
+        <div class="proto-icon">LACP</div>
+        <div>
+          <h3>LACP</h3>
+          <div class="sub">Link Aggregation Control Protocol</div>
+        </div>
+      </div>
+      <div class="tag-row">
+        <span class="proto-tag">IEEE 802.3ad</span>
+        <span class="proto-tag">Open Standard</span>
+        <span class="proto-tag">Multi-vendor</span>
+      </div>
+      <ul>
+        <li>Open IEEE standard — works across different vendors</li>
+        <li>Up to 16 ports configured; 8 active + 8 standby</li>
+        <li>Standby ports activate automatically on failure</li>
+        <li>Preferred protocol for modern multi-vendor networks</li>
+      </ul>
+      <div class="mode-table">
+        <table>
+          <tr><th>Mode</th><th>Behavior</th></tr>
+          <tr><td class="mode-name">On</td><td>Forces channel — no negotiation</td></tr>
+          <tr><td class="mode-name">Active</td><td>Actively initiates LACP</td></tr>
+          <tr><td class="mode-name">Passive</td><td>Passively waits for LACP</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ SLIDE 5 ══════════ -->
+<section class="slide" id="s5">
+  <div class="badge">Best Practices</div>
+  <h2>Port Requirements &amp; <span>Configuration Rules</span></h2>
+  <div class="two-col">
+    <div class="req-list">
+      <div class="req-item">
+        <div class="num">01</div>
+        <div><h4>Identical Speed &amp; Duplex</h4><p>All member interfaces must operate at the same speed and duplex setting. Mismatch prevents EtherChannel formation.</p></div>
+      </div>
+      <div class="req-item">
+        <div class="num">02</div>
+        <div><h4>Matching VLAN Configuration</h4><p>All ports must belong to the same VLAN (access) or be configured as trunks with identical native VLANs.</p></div>
+      </div>
+      <div class="req-item">
+        <div class="num">03</div>
+        <div><h4>Consistent Allowed VLAN List</h4><p>On trunk EtherChannels, the allowed VLAN list must be identical on both ends — even in auto/desirable mode.</p></div>
+      </div>
+      <div class="req-item">
+        <div class="num">04</div>
+        <div><h4>Configure via Port-Channel Interface</h4><p>Apply trunk, VLAN, and other settings to the logical Port-Channel interface, not individual physical ports.</p></div>
+      </div>
+      <div class="req-item">
+        <div class="num">05</div>
+        <div><h4>Compatible Negotiation Modes</h4><p>Modes must be compatible: Active↔Active or Active↔Passive (LACP); Desirable↔Desirable or Desirable↔Auto (PAgP). Never Passive↔Passive.</p></div>
+      </div>
+    </div>
+    <div class="img-side">
+      <img src="assets/slide5_engineer_config.png" alt="Network engineer configuring EtherChannel"/>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════ SLIDE 6 ══════════ -->
+<section class="slide" id="s6">
+<style>
+#s6{background:#050a0f;display:flex;flex-direction:column;padding:48px 9vw}
+#s6 .badge{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#38bdf8;margin-bottom:16px;font-weight:600;display:flex;align-items:center;gap:8px}
+#s6 .badge::before{content:'';width:24px;height:2px;background:#38bdf8;border-radius:2px}
+#s6 h2{font-size:clamp(24px,2.6vw,40px);font-weight:800;margin-bottom:28px}
+#s6 h2 span{color:#38bdf8}
+#s6 .cmd-layout{display:grid;grid-template-columns:1fr 1fr;gap:24px;flex:1;align-items:start}
+#s6 .steps{display:flex;flex-direction:column;gap:14px}
+.step-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:16px 18px}
+.step-card .step-num{font-size:10px;letter-spacing:.15em;color:#38bdf8;font-weight:700;text-transform:uppercase;margin-bottom:6px}
+.step-card h4{font-size:13px;font-weight:700;margin-bottom:6px}
+.step-card p{font-size:12px;color:rgba(255,255,255,.5);line-height:1.5;margin-bottom:8px}
+.cmd-block{background:#0d1117;border:1px solid rgba(56,189,248,.2);border-radius:8px;padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:11.5px;line-height:1.7}
+.cmd-block .prompt{color:#38bdf8}.cmd-block .cmd{color:#e2e8f0}.cmd-block .comment{color:rgba(255,255,255,.3);font-style:italic}
+#s6 .terminal-panel{background:#0d1117;border:1px solid rgba(56,189,248,.2);border-radius:16px;overflow:hidden;display:flex;flex-direction:column}
+#s6 .t-bar{background:#161b22;padding:10px 14px;display:flex;align-items:center;gap:7px}
+#s6 .t-dot{width:11px;height:11px;border-radius:50%}
+#s6 .t-title{font-size:11px;color:rgba(255,255,255,.4);margin-left:6px;font-family:'JetBrains Mono',monospace}
+#s6 .t-body{padding:18px;font-family:'JetBrains Mono',monospace;font-size:11.5px;line-height:1.85;flex:1}
+#s6 .t-body .lp{color:#38bdf8}#s6 .t-body .lc{color:#a5f3fc}#s6 .t-body .lo{color:rgba(255,255,255,.5)}#s6 .t-body .lok{color:#22c55e}#s6 .t-body .lcm{color:rgba(255,255,255,.25);font-style:italic}
+</style>
+  <div class="badge">Configuration</div>
+  <h2>LACP EtherChannel <span>Command Reference</span></h2>
+  <div class="cmd-layout">
+    <div class="steps">
+      <div class="step-card">
+        <div class="step-num">Step 1 · VLAN Setup</div>
+        <h4>Create VLANs &amp; Management Interface</h4>
+        <p>Create required VLANs and assign management IP to VLAN 10.</p>
+        <div class="cmd-block">
+          <div><span class="prompt">S1(config)# </span><span class="cmd">vlan 10</span></div>
+          <div><span class="prompt">S1(config-vlan)# </span><span class="cmd">name Management</span></div>
+          <div><span class="prompt">S1(config)# </span><span class="cmd">interface vlan 10</span></div>
+          <div><span class="prompt">S1(config-if)# </span><span class="cmd">ip address 192.168.10.11 255.255.255.0</span></div>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">Step 2 · Trunk Ports</div>
+        <h4>Configure 802.1Q Trunks on F0/1–F0/2</h4>
+        <p>Force trunking and restrict VLANs before EtherChannel formation.</p>
+        <div class="cmd-block">
+          <div><span class="prompt">S1(config)# </span><span class="cmd">interface range f0/1-2</span></div>
+          <div><span class="prompt">S1(config-if-range)# </span><span class="cmd">switchport mode trunk</span></div>
+          <div><span class="prompt">S1(config-if-range)# </span><span class="cmd">switchport trunk native vlan 1000</span></div>
+          <div><span class="prompt">S1(config-if-range)# </span><span class="cmd">switchport trunk allowed vlan 10,20,1000</span></div>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">Step 3 · EtherChannel</div>
+        <h4>Create LACP Port-Channel Group 1</h4>
+        <p>Assign F0/1–F0/2 to channel-group 1 with LACP active mode.</p>
+        <div class="cmd-block">
+          <div><span class="prompt">S1(config)# </span><span class="cmd">interface range f0/1-2</span></div>
+          <div><span class="prompt">S1(config-if-range)# </span><span class="cmd">channel-group 1 mode active</span></div>
+          <div><span class="comment">! S2: channel-group 1 mode active (Active+Active)</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="terminal-panel">
+      <div class="t-bar">
+        <div class="t-dot" style="background:#ff5f57"></div>
+        <div class="t-dot" style="background:#ffbd2e"></div>
+        <div class="t-dot" style="background:#28c840"></div>
+        <span class="t-title">S1 — Cisco IOS CLI</span>
+      </div>
+      <div class="t-body">
+        <div><span class="lcm">! ── Full EtherChannel Config ──</span></div>
+        <div>&nbsp;</div>
+        <div><span class="lp">S1# </span><span class="lc">configure terminal</span></div>
+        <div><span class="lo">Enter configuration commands, one per line.</span></div>
+        <div>&nbsp;</div>
+        <div><span class="lcm">! ── VLANs ──</span></div>
+        <div><span class="lp">S1(config)# </span><span class="lc">vlan 10</span></div>
+        <div><span class="lp">S1(config-vlan)# </span><span class="lc">name Management</span></div>
+        <div><span class="lp">S1(config-vlan)# </span><span class="lc">vlan 20</span></div>
+        <div><span class="lp">S1(config-vlan)# </span><span class="lc">name Clients</span></div>
+        <div><span class="lp">S1(config-vlan)# </span><span class="lc">vlan 999</span></div>
+        <div><span class="lp">S1(config-vlan)# </span><span class="lc">name Parking_Lot</span></div>
+        <div><span class="lp">S1(config-vlan)# </span><span class="lc">vlan 1000</span></div>
+        <div><span class="lp">S1(config-vlan)# </span><span class="lc">name Native</span></div>
+        <div><span class="lp">S1(config-vlan)# </span><span class="lc">exit</span></div>
+        <div>&nbsp;</div>
+        <div><span class="lcm">! ── Trunk + EtherChannel ──</span></div>
+        <div><span class="lp">S1(config)# </span><span class="lc">interface range f0/1-2</span></div>
+        <div><span class="lp">S1(config-if-range)# </span><span class="lc">switchport mode trunk</span></div>
+        <div><span class="lp">S1(config-if-range)# </span><span class="lc">switchport trunk native vlan 1000</span></div>
+        <div><span class="lp">S1(config-if-range)# </span><span class="lc">switchport trunk allowed vlan 10,20,1000</span></div>
+        <div><span class="lp">S1(config-if-range)# </span><span class="lc">channel-group 1 mode active</span></div>
+        <div><span class="lok">Creating a port-channel interface Port-channel 1</span></div>
+        <div>&nbsp;</div>
+        <div><span class="lp">S1(config-if-range)# </span><span class="lc">end</span></div>
+        <div><span class="lp">S1# </span><span class="lc">copy running-config startup-config</span></div>
+        <div><span class="lok">[OK]</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ SLIDE 7 ══════════ -->
+<section class="slide" id="s7">
+<style>
+#s7{background:#06080f;display:flex;flex-direction:column;padding:48px 9vw}
+#s7 .badge{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#f472b6;margin-bottom:16px;font-weight:600;display:flex;align-items:center;gap:8px}
+#s7 .badge::before{content:'';width:24px;height:2px;background:#f472b6;border-radius:2px}
+#s7 h2{font-size:clamp(24px,2.6vw,40px);font-weight:800;margin-bottom:24px}
+#s7 h2 span{color:#f472b6}
+#s7 .lab-layout{display:grid;grid-template-columns:1.1fr 1fr;gap:28px;flex:1}
+#s7 .tables-col{display:flex;flex-direction:column;gap:16px}
+#s7 table{width:100%;border-collapse:collapse;font-size:12.5px}
+#s7 table caption{text-align:left;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.3);font-weight:600;margin-bottom:7px}
+#s7 table th{padding:8px 12px;background:rgba(255,255,255,.06);font-size:10px;letter-spacing:.06em;text-transform:uppercase;font-weight:600;color:rgba(255,255,255,.45);text-align:left;border-bottom:1px solid rgba(255,255,255,.08)}
+#s7 table td{padding:8px 12px;border-bottom:1px solid rgba(255,255,255,.05);color:rgba(255,255,255,.8)}
+#s7 table tr:last-child td{border-bottom:none}
+#s7 .tbl-wrap{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;overflow:hidden}
+#s7 .img-col{display:flex;align-items:center;justify-content:center}
+#s7 .img-col img{width:100%;max-height:440px;object-fit:cover;border-radius:14px;filter:brightness(.8) saturate(1.1);box-shadow:0 0 50px rgba(244,114,182,.12)}
+#s7 .objectives{background:rgba(244,114,182,.06);border:1px solid rgba(244,114,182,.2);border-radius:10px;padding:12px 16px}
+#s7 .objectives h4{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#f472b6;font-weight:700;margin-bottom:7px}
+#s7 .objectives ol{padding-left:16px;display:flex;flex-direction:column;gap:3px}
+#s7 .objectives ol li{font-size:12.5px;color:rgba(255,255,255,.65);line-height:1.5}
+</style>
+  <div class="badge">Lab Exercise</div>
+  <h2>Lab — Implement <span>EtherChannel</span></h2>
+  <div class="lab-layout">
+    <div class="tables-col">
+      <div class="tbl-wrap">
+        <table>
+          <caption>Addressing Table</caption>
+          <thead><tr><th>Device</th><th>Interface</th><th>IP Address</th><th>Subnet Mask</th></tr></thead>
+          <tbody>
+            <tr><td>S1</td><td>VLAN 10</td><td>192.168.10.11</td><td>255.255.255.0</td></tr>
+            <tr><td>S2</td><td>VLAN 10</td><td>192.168.10.12</td><td>255.255.255.0</td></tr>
+            <tr><td>PC-A</td><td>NIC</td><td>192.168.20.3</td><td>255.255.255.0</td></tr>
+            <tr><td>PC-B</td><td>NIC</td><td>192.168.20.4</td><td>255.255.255.0</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <caption>VLAN Table</caption>
+          <thead><tr><th>VLAN</th><th>Name</th><th>Assigned Interfaces</th></tr></thead>
+          <tbody>
+            <tr><td>10</td><td>Management</td><td>VLAN 10 SVI</td></tr>
+            <tr><td>20</td><td>Clients</td><td>S1: F0/6 · S2: F0/18</td></tr>
+            <tr><td>999</td><td>Parking_Lot</td><td>S1: F0/3-5, F0/7-24, G0/1-2</td></tr>
+            <tr><td>1000</td><td>Native</td><td>N/A (trunk native)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="objectives">
+        <h4>Lab Objectives</h4>
+        <ol>
+          <li>Build the network and configure basic device settings</li>
+          <li>Create VLANs and assign switch ports</li>
+          <li>Configure 802.1Q trunks between the switches</li>
+          <li>Implement and verify LACP EtherChannel (Group 1)</li>
+        </ol>
+      </div>
+    </div>
+    <div class="img-col">
+      <img src="assets/slide7_lab_topology.png" alt="Lab network topology"/>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ SLIDE 8 ══════════ -->
+<section class="slide" id="s8">
+<style>
+#s8{background:#040c0a;display:flex;flex-direction:column;padding:48px 9vw}
+#s8 .badge{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#34d399;margin-bottom:16px;font-weight:600;display:flex;align-items:center;gap:8px}
+#s8 .badge::before{content:'';width:24px;height:2px;background:#34d399;border-radius:2px}
+#s8 h2{font-size:clamp(24px,2.6vw,40px);font-weight:800;margin-bottom:24px}
+#s8 h2 span{color:#34d399}
+#s8 .verify-layout{display:grid;grid-template-columns:1fr 1fr;gap:24px;flex:1}
+.vcmd{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:16px 18px;display:flex;flex-direction:column;gap:8px}
+.vcmd .ctitle{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#34d399;font-weight:700}
+.vcmd .cmain{font-family:'JetBrains Mono',monospace;font-size:12px;color:#a5f3fc;background:#0d1117;border-radius:7px;padding:7px 11px}
+.vcmd p{font-size:12px;color:rgba(255,255,255,.5);line-height:1.5}
+.vcmd .sc{display:flex;gap:7px;flex-wrap:wrap}
+.scb{font-family:'JetBrains Mono',monospace;font-size:10.5px;padding:2px 7px;border-radius:4px}
+.scp{background:rgba(52,211,153,.15);color:#6ee7b7;border:1px solid rgba(52,211,153,.25)}
+.sci{background:rgba(251,191,36,.12);color:#fde68a;border:1px solid rgba(251,191,36,.2)}
+.scd{background:rgba(239,68,68,.12);color:#fca5a5;border:1px solid rgba(239,68,68,.2)}
+.scu{background:rgba(99,102,241,.12);color:#c7d2fe;border:1px solid rgba(99,102,241,.2)}
+#s8 .right-col{display:flex;flex-direction:column;gap:16px}
+#s8 .term-out{background:#0d1117;border:1px solid rgba(52,211,153,.2);border-radius:14px;overflow:hidden;flex:1}
+#s8 .tb2{background:#161b22;padding:9px 14px;display:flex;align-items:center;gap:7px}
+#s8 .td2{width:10px;height:10px;border-radius:50%}
+#s8 .tbody2{padding:14px;font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.85}
+#s8 .op{color:#34d399}#s8 .oc{color:#a5f3fc}#s8 .oh{color:rgba(255,255,255,.45)}#s8 .og{color:#6ee7b7}#s8 .on{color:rgba(255,255,255,.7)}
+#s8 .po-info{background:rgba(52,211,153,.06);border:1px solid rgba(52,211,153,.2);border-radius:10px;padding:13px 16px}
+#s8 .po-info h4{font-size:12px;color:#34d399;font-weight:700;margin-bottom:5px}
+#s8 .po-info p{font-size:12px;color:rgba(255,255,255,.55);line-height:1.5}
+</style>
+  <div class="badge">Verification</div>
+  <h2>Verify <span>EtherChannel</span> Configuration</h2>
+  <div class="verify-layout">
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="vcmd">
+        <div class="ctitle">Command 1</div>
+        <div class="cmain">show etherchannel summary</div>
+        <p>One-line summary per channel group with member port states. Best for quick health checks.</p>
+        <div class="sc">
+          <span class="scb scp">(P) Bundled</span>
+          <span class="scb sci">(I) Stand-alone</span>
+          <span class="scb scd">(D) Down</span>
+          <span class="scb scu">(U) In use</span>
+        </div>
+      </div>
+      <div class="vcmd">
+        <div class="ctitle">Command 2</div>
+        <div class="cmain">show interfaces port-channel 1</div>
+        <p>Status, bandwidth, and encapsulation of the logical Po1 interface — same format as a physical port.</p>
+      </div>
+      <div class="vcmd">
+        <div class="ctitle">Command 3</div>
+        <div class="cmain">show interfaces trunk</div>
+        <p>Confirms Po1 operates as a trunk; shows native VLAN and allowed VLAN list across the channel.</p>
+      </div>
+      <div class="vcmd">
+        <div class="ctitle">Command 4</div>
+        <div class="cmain">show etherchannel port-channel</div>
+        <p>Detailed per-channel info: load-balancing method, per-port states, LACP negotiation parameters.</p>
+      </div>
+    </div>
+    <div class="right-col">
+      <div class="term-out">
+        <div class="tb2">
+          <div class="td2" style="background:#ff5f57"></div>
+          <div class="td2" style="background:#ffbd2e"></div>
+          <div class="td2" style="background:#28c840"></div>
+          <span style="font-size:10px;color:rgba(255,255,255,.4);margin-left:6px;font-family:'JetBrains Mono',monospace">S1 — show etherchannel summary</span>
+        </div>
+        <div class="tbody2">
+          <div><span class="op">S1# </span><span class="oc">show etherchannel summary</span></div>
+          <div class="oh">Flags:  D - down        P - bundled in port-channel</div>
+          <div class="oh">        I - stand-alone s - suspended</div>
+          <div class="oh">        H - Hot-standby (LACP only)</div>
+          <div class="oh">        R - Layer3      S - Layer2</div>
+          <div class="oh">        U - in use      N - not in use</div>
+          <div>&nbsp;</div>
+          <div class="oh">Number of channel-groups in use: 1</div>
+          <div class="oh">Number of aggregators:          1</div>
+          <div>&nbsp;</div>
+          <div class="oh">Group  Port-channel  Protocol    Ports</div>
+          <div class="oh">------+-------------+-----------+----------</div>
+          <div><span class="on">1      </span><span class="og">Po1(SU)        </span><span class="on">LACP        </span><span class="og">Fa0/1(P)  Fa0/2(P)</span></div>
+          <div>&nbsp;</div>
+          <div><span class="op">S1# </span><span class="oc">show interfaces trunk</span></div>
+          <div class="oh">Port    Mode   Encapsulation  Status    Native vlan</div>
+          <div><span class="og">Po1     on     802.1q         trunking  1000</span></div>
+          <div>&nbsp;</div>
+          <div class="oh">Port    Vlans allowed on trunk</div>
+          <div><span class="og">Po1     10,20,1000</span></div>
+        </div>
+      </div>
+      <div class="po-info">
+        <h4>What is Po1?</h4>
+        <p>Po1 (Port-Channel 1) is the virtual logical interface representing bundled ports F0/1 and F0/2. STP, VLANs, and routing interact with Po1 as a single physical link — all capacity utilized.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ SLIDE 9 ══════════ -->
+<section class="slide" id="s9">
+<style>
+#s9{background:#100808;display:flex;flex-direction:column;padding:48px 9vw}
+#s9 .badge{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#f87171;margin-bottom:16px;font-weight:600;display:flex;align-items:center;gap:8px}
+#s9 .badge::before{content:'';width:24px;height:2px;background:#f87171;border-radius:2px}
+#s9 h2{font-size:clamp(24px,2.6vw,40px);font-weight:800;margin-bottom:24px}
+#s9 h2 span{color:#f87171}
+#s9 .issues-layout{display:grid;grid-template-columns:1fr 1fr;gap:24px;flex:1;align-items:start}
+.iss{background:rgba(248,113,113,.05);border:1px solid rgba(248,113,113,.18);border-radius:12px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start}
+.iss .iico{flex-shrink:0;width:30px;height:30px;border-radius:8px;background:rgba(248,113,113,.12);display:flex;align-items:center;justify-content:center;font-size:14px}
+.iss h4{font-size:13px;font-weight:700;margin-bottom:4px;color:#fca5a5}
+.iss p{font-size:12px;color:rgba(255,255,255,.5);line-height:1.5}
+#s9 .sum-panel{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:0}
+#s9 .sum-panel h3{font-size:15px;font-weight:800;margin-bottom:12px}
+#s9 .sr{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+#s9 .sr:last-child{border-bottom:none}
+#s9 .sr .sn{width:24px;height:24px;border-radius:6px;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;margin-top:1px}
+#s9 .sr h5{font-size:13px;font-weight:700;margin-bottom:2px}
+#s9 .sr p{font-size:12px;color:rgba(255,255,255,.5);line-height:1.45}
+</style>
+  <div class="badge">Troubleshooting</div>
+  <h2>Common Issues &amp; <span>Key Takeaways</span></h2>
+  <div class="issues-layout">
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div class="iss"><div class="iico">⚡</div><div><h4>VLAN Mismatch</h4><p>Ports in different VLANs or trunks with different native VLANs cannot bundle — configurations must be identical on all members.</p></div></div>
+      <div class="iss"><div class="iico">🔀</div><div><h4>Partial Trunk Config</h4><p>Trunking set on only some member ports. Always configure trunking on the Port-Channel interface, not individual physical ports.</p></div></div>
+      <div class="iss"><div class="iico">📋</div><div><h4>Allowed VLAN List Mismatch</h4><p>If the allowed VLAN range differs between ends, EtherChannel won't form — even in auto or desirable mode.</p></div></div>
+      <div class="iss"><div class="iico">🤝</div><div><h4>Incompatible Modes</h4><p>Passive↔Passive or Auto↔Auto will never negotiate. At least one side must actively initiate (Active / Desirable).</p></div></div>
+      <div class="iss"><div class="iico">⚙</div><div><h4>Speed / Duplex Mismatch</h4><p>All member interfaces must run at the same speed and duplex. Any difference prevents EtherChannel formation.</p></div></div>
+    </div>
+    <div class="sum-panel">
+      <h3>Module Summary</h3>
+      <div class="sr"><div class="sn">1</div><div><h5>EtherChannel Aggregates Links</h5><p>Bundles 2–8 ports into one logical Port-Channel. STP sees it as a single link — no ports blocked, all capacity used.</p></div></div>
+      <div class="sr"><div class="sn">2</div><div><h5>Two Protocols Available</h5><p>PAgP (Cisco only) and LACP (IEEE 802.3ad open standard). LACP preferred for multi-vendor environments.</p></div></div>
+      <div class="sr"><div class="sn">3</div><div><h5>Configuration Consistency is Key</h5><p>Speed, duplex, VLAN ID, native VLAN, and allowed VLANs must match on all member ports on both switches.</p></div></div>
+      <div class="sr"><div class="sn">4</div><div><h5>Configure via Port-Channel</h5><p>Apply trunk and VLAN settings to the logical Port-Channel interface — changes automatically propagate to members.</p></div></div>
+      <div class="sr"><div class="sn">5</div><div><h5>Verify with show Commands</h5><p>Use <code style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#6ee7b7">show etherchannel summary</code> and <code style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#6ee7b7">show interfaces trunk</code> to confirm correct operation.</p></div></div>
+    </div>
+  </div>
+</section>
+
+</div><!-- /deck -->
+
+<div id="slide-num">1 / 9</div>
+
+<script>
+(function(){
+  const slides = document.querySelectorAll('.slide');
+  const numEl  = document.getElementById('slide-num');
+  const total  = slides.length;
+  let cur = 0;
+
+  function goTo(n){
+    if(n < 0 || n >= total) return;
+    slides[cur].classList.remove('active');
+    slides[cur].classList.add('exit');
+    const prev = cur;
+    setTimeout(()=>{ slides[prev].classList.remove('exit'); }, 700);
+    cur = n;
+    slides[cur].classList.add('active');
+    numEl.textContent = (cur+1) + ' / ' + total;
+  }
+
+  document.addEventListener('keydown', e => {
+    if(e.key==='ArrowRight'||e.key==='ArrowDown'||e.key===' '){ e.preventDefault(); goTo(cur+1); }
+    if(e.key==='ArrowLeft' ||e.key==='ArrowUp')               { e.preventDefault(); goTo(cur-1); }
+    if(e.key==='Home')                                         { e.preventDefault(); goTo(0); }
+    if(e.key==='End')                                          { e.preventDefault(); goTo(total-1); }
+  });
+
+  let tx=0;
+  document.addEventListener('touchstart',e=>{ tx=e.touches[0].clientX; },{passive:true});
+  document.addEventListener('touchend',  e=>{
+    const dx=tx-e.changedTouches[0].clientX;
+    if(Math.abs(dx)>50){ dx>0?goTo(cur+1):goTo(cur-1); }
+  },{passive:true});
+})();
+</script>
+</body>
+</html>
